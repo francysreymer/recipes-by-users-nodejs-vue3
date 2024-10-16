@@ -20,18 +20,18 @@ export class AuthController {
   }
 
   async login(req: Request, res: Response): Promise<Response> {
-    const { error, value } = authSchema.validate(req.body);
-
-    if (error) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: this.ERROR_MESSAGES.VALIDATION_ERROR,
-        details: error.details,
-      });
-    }
-
-    const { login, senha } = value;
-
     try {
+      const { error, value } = authSchema.validate(req.body);
+
+      if (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          message: this.ERROR_MESSAGES.VALIDATION_ERROR,
+          details: error.details,
+        });
+      }
+
+      const { login, senha } = value;
+
       const token = await this.authService.authenticate(login, senha);
       return res.json({ token });
     } catch (error) {

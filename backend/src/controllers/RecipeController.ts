@@ -13,7 +13,6 @@ export class RecipeController {
   private readonly ERROR_MESSAGES = {
     VALIDATION_ERROR: "Validation error",
     UNAUTHORIZED: "Unauthorized",
-    BAD_REQUEST: "Bad request",
   };
 
   constructor() {
@@ -116,14 +115,7 @@ export class RecipeController {
       const userId = req.user?.id;
       const recipeId = parseInt(req.params.id, 10);
 
-      const deleted = await this.recipeService.deleteRecipe(recipeId, userId);
-      if (!deleted) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          message: this.ERROR_MESSAGES.BAD_REQUEST,
-        });
-        return;
-      }
-
+      await this.recipeService.deleteRecipe(recipeId, userId);
       res.status(StatusCodes.NO_CONTENT).end();
     } catch (error: any) {
       handleError(res, error);

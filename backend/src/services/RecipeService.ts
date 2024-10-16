@@ -9,6 +9,7 @@ export class RecipeService implements IRecipeService {
   private readonly ERROR_MESSAGES = {
     RECIPE_NOT_FOUND: "Recipe not found",
     UNAUTHORIZED_ACCESS: "Unauthorized access to this recipe",
+    FAILED_TO_DELETE: "Failed to delete recipe",
   };
 
   constructor(recipeRepository: IRecipeRepository) {
@@ -63,7 +64,7 @@ export class RecipeService implements IRecipeService {
     return await this.recipeRepository.save(recipe);
   };
 
-  deleteRecipe = async (id: number, userId: number): Promise<boolean> => {
+  deleteRecipe = async (id: number, userId: number): Promise<void> => {
     const existingRecipe = await this.recipeRepository.findOneById(id);
 
     if (!existingRecipe) {
@@ -74,6 +75,9 @@ export class RecipeService implements IRecipeService {
       throw new createError.Forbidden(this.ERROR_MESSAGES.UNAUTHORIZED_ACCESS);
     }
 
-    return await this.recipeRepository.delete(id);
+    const deleted = await this.recipeRepository.delete(id);
+    if (!deleted) {
+      throw new createError.BadRequest(this.ERROR_MESSAGES.FAILED_TO_DELETE);
+    }
   };
 }
