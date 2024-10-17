@@ -65,18 +65,18 @@ After logging in, users will be able to navigate through the following pages:
 
 ### Recipes
 
-The Recipes provides a page that shows all recipes created by the logged user.
+The Recipes provides a page that shows all recipes created by the logged user. Accessible at [http://localhost:8082/recipes](http://localhost:8082/recipes)
 
 ![Recipes](images/recipes.png)
 
 ### Add/Update Recipe
 
-The Add/Update Page allows the logged user to add/update recipes.
+The Add/Update Page allows the logged user to add/update recipes. 
 
 ![Add New Location](images/recipes-form.png)
 
 ### Register User
 
-The Register User Page allows new users to register so they can gain access and create their own recipes.
+The Register User Page allows new users to register so they can gain access and create their own recipes. Accessible at [http://localhost:8082/register](http://localhost:8082/register)
 
 ![Register User](images/register-user.png)
