@@ -60,6 +60,7 @@ export class RecipeService implements IRecipeService {
       throw new createError.Forbidden(this.ERROR_MESSAGES.UNAUTHORIZED_ACCESS);
     }
 
+    recipe.id = id;
     recipe.id_usuarios = { id: userId } as Recipe["id_usuarios"];
     return await this.recipeRepository.save(recipe);
   };

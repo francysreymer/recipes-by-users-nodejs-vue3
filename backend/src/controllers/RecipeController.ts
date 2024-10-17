@@ -29,7 +29,20 @@ export class RecipeController {
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
-      const recipes = await this.recipeService.getAllUserRecipes(userId);
+
+      // Extract filter parameters
+      const { nome, tempo_preparo_minutos } = req.query;
+      const filter = {
+        nome: nome ? String(nome) : undefined,
+        tempo_preparo_minutos: tempo_preparo_minutos
+          ? parseInt(String(tempo_preparo_minutos), 10)
+          : undefined,
+      };
+
+      const recipes = await this.recipeService.getAllUserRecipes(
+        userId,
+        filter
+      );
       res.status(StatusCodes.OK).json(recipes);
     } catch (error: any) {
       handleError(res, error);

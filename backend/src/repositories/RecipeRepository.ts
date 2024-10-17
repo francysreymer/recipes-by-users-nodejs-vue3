@@ -14,7 +14,7 @@ export class RecipeRepository implements IRecipeRepository {
     userId: number,
     filter?: RecipeFilter
   ): Promise<Recipe[]> {
-    const where: any = { id_usuarios: userId };
+    const where: any = { id_usuarios: { id: userId } };
 
     if (filter) {
       if (filter.nome) {
@@ -25,7 +25,10 @@ export class RecipeRepository implements IRecipeRepository {
       }
     }
 
-    return await this.repository.find({ where, relations: ["id_categorias"] });
+    return await this.repository.find({
+      where,
+      relations: ["id_categorias"],
+    });
   }
 
   async findOneById(id: number): Promise<Recipe | null> {
