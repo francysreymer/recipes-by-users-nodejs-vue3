@@ -39,12 +39,14 @@ This project is an API that includes a backend built with Nodejs + Typescript, a
 5. **Then run, inside the backend folder, the command:**
 
     ```bash
+    npm install
     npm start
     ```
 
 6. **Then run, inside the frontend folder, the command:**
 
     ```bash
+    npm install
     npm run serve
     ```
 The application should now be runnig at [http://localhost:8082](http://localhost:8082).
