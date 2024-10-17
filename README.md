@@ -32,17 +32,17 @@ This project is an API that includes a backend built with Nodejs + Typescript, a
     docker compose up -d
     ```
 
-2. **Inside the backend folder -> Copy the .env.example and rename to .env and then set the JWT_TOKEN and PEPPER for passwords:**
+3. **Inside the backend folder -> Copy the .env.example and rename to .env and then set the JWT_TOKEN and PEPPER for passwords:**
 
-3. **Inside the frontend folder -> Copy the .env.example and rename to .env and then set the VUE_APP_APP_PORT as the same you have previously set for the APP_PORT to the backend:**
+4. **Inside the frontend folder -> Copy the .env.example and rename to .env and then set the VUE_APP_APP_PORT as the same you have previously set for the APP_PORT to the backend:**
 
-4. **Then run, inside the backend folder, the command:**
+5. **Then run, inside the backend folder, the command:**
 
     ```bash
     npm start
     ```
 
-7. **Then run, inside the frontend folder, the command:**
+6. **Then run, inside the frontend folder, the command:**
 
     ```bash
     npm run serve
