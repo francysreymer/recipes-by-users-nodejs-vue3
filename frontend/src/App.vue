@@ -1,6 +1,32 @@
 <template>
-  <router-view />
+  <div>
+    <nav>
+      <router-link v-if="isAuthenticated" to="/dashboard"
+        >Dashboard</router-link
+      >
+      <a v-if="isAuthenticated" @click="logout">Logout</a>
+    </nav>
+    <router-view />
+  </div>
 </template>
+
+<script>
+import { mapState } from "vuex";
+import Cookies from "js-cookie";
+
+export default {
+  computed: {
+    ...mapState(["isAuthenticated"]),
+  },
+  methods: {
+    logout() {
+      Cookies.remove("auth_token");
+      this.$store.dispatch("logout");
+      this.$router.push("/login");
+    },
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
@@ -13,6 +39,9 @@
 
 nav {
   padding: 30px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 
   a {
     font-weight: bold;

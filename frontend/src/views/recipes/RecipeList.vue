@@ -1,15 +1,16 @@
 <template>
+  <a @click="logout" class="logout-link"><b>Logout</b></a>
   <div class="recipe-container">
     <h1>Recipes</h1>
     <button @click="redirectToAddRecipe" class="add-recipe-button">
       Add New Recipe
     </button>
+    <RecipeFilters @applyFilters="applyFilters" />
     <MessageComponent
       v-if="message"
       :message="message.text"
       :type="message.type"
     />
-    <RecipeFilters @applyFilters="applyFilters" />
     <table class="recipe-table">
       <thead>
         <tr>
@@ -61,6 +62,7 @@ import apis from "@/config/apis";
 import { Recipe } from "@/types/Recipe";
 import MessageComponent from "@/components/MessageComponent.vue";
 import RecipeFilters from "@/components/RecipeFilters.vue";
+import Cookies from "js-cookie";
 
 export default defineComponent({
   name: "RecipeList",
@@ -188,6 +190,11 @@ export default defineComponent({
       fetchRecipes();
     });
 
+    const logout = () => {
+      Cookies.remove("auth_token");
+      router.push("/");
+    };
+
     return {
       recipes,
       redirectToAddRecipe,
@@ -196,6 +203,7 @@ export default defineComponent({
       deleteRecipe,
       message,
       applyFilters,
+      logout,
     };
   },
 });
@@ -257,5 +265,18 @@ h1 {
 
 .action-button:hover {
   background-color: #369f6b;
+}
+
+.logout-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #42b983;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.logout-link:hover {
+  color: #369f6b;
 }
 </style>
