@@ -75,6 +75,6 @@ The Add/Update Page allows the logged user to add/update recipes.
 
 ### Register User
 
-The Register User Page allows the registering for new users so that they can have access to create their own recipes.
+The Register User Page allows new users to register so they can gain access and create their own recipes.
 
 ![Register User](images/register-user.png)
