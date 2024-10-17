@@ -63,7 +63,7 @@ After logging in, users will be able to navigate through the following pages:
 
 ### Recipes
 
-The locations provides a page that shows all the city,states created by the logged user.
+The Recipes provides a page that shows all recipes created by the logged user.
 
 ![Recipes](images/recipes.png)
 
