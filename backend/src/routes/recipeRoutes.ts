@@ -1,34 +1,35 @@
-import { Router } from "express";
-import { RecipeController } from "@/controllers/RecipeController";
-import { authJWTMiddleware } from "@/middlewares/authJWTMiddleware"; // Import the auth middleware
+import { Router } from 'express';
+
+import { RecipeController } from '@/controllers/RecipeController';
+import { authJWTMiddleware } from '@/middlewares/authJWTMiddleware'; // Import the auth middleware
 
 const recipeRoutes = Router();
 const recipeController = new RecipeController();
 
 recipeRoutes.get(
-  "/recipes",
+  '/recipes',
   authJWTMiddleware,
-  recipeController.getAllUserRecipes
+  recipeController.getAllUserRecipes,
 );
 recipeRoutes.get(
-  "/recipes/:id",
+  '/recipes/:id',
   authJWTMiddleware,
-  recipeController.getUserRecipeById
+  recipeController.getUserRecipeById,
 );
 recipeRoutes.post(
-  "/recipes",
+  '/recipes',
   authJWTMiddleware,
-  recipeController.createUserRecipe
+  recipeController.createUserRecipe,
 );
 recipeRoutes.put(
-  "/recipes/:id",
+  '/recipes/:id',
   authJWTMiddleware,
-  recipeController.updateUserRecipe
+  recipeController.updateUserRecipe,
 );
 recipeRoutes.delete(
-  "/recipes/:id",
+  '/recipes/:id',
   authJWTMiddleware,
-  recipeController.deleteUserRecipe
+  recipeController.deleteUserRecipe,
 );
 
 export default recipeRoutes;

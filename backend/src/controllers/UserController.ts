@@ -1,17 +1,18 @@
-import { Request, Response } from "express";
-import { UserService } from "@/services/UserService";
-import { UserRepository } from "@/repositories/UserRepository";
-import { User } from "@/entities/User";
-import { AppDataSource } from "@/config/data-source";
-import { StatusCodes } from "http-status-codes";
-import { userSchema } from "@/validators/userValidator";
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+import { AppDataSource } from '@/config/data-source';
+import { User } from '@/entities/User';
+import { UserRepository } from '@/repositories/UserRepository';
+import { UserService } from '@/services/UserService';
+import { userSchema } from '@/validators/userValidator';
 
 export class UserController {
   private userService: UserService;
 
   constructor() {
     const userRepository = new UserRepository(
-      AppDataSource.getRepository(User)
+      AppDataSource.getRepository(User),
     );
     this.userService = new UserService(userRepository);
   }
@@ -22,7 +23,7 @@ export class UserController {
 
       if (error) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "Validation error",
+          message: 'Validation error',
           details: error.details,
         });
       }

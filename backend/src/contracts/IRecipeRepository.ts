@@ -1,5 +1,5 @@
-import { Recipe } from "@/entities/Recipe";
-import RecipeFilter from "@/types/RecipeFilter";
+import { Recipe } from '@/entities/Recipe';
+import RecipeFilter from '@/types/RecipeFilter';
 
 export default interface IRecipeRepository {
   findUserRecipes(userId: number, filter?: RecipeFilter): Promise<Recipe[]>;

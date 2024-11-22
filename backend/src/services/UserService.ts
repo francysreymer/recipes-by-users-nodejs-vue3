@@ -1,19 +1,20 @@
-import { User } from "@/entities/User";
-import IUserRepository from "@/contracts/IUserRepository";
-import IUserService from "@/contracts/IUserService";
-import createError from "http-errors";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import createError from 'http-errors';
+
+import IUserRepository from '@/contracts/IUserRepository';
+import IUserService from '@/contracts/IUserService';
+import { User } from '@/entities/User';
 
 export class UserService implements IUserService {
   private userRepository: IUserRepository;
   private pepper: string;
   private readonly ERROR_MESSAGES = {
-    USER_NOT_FOUND: "User not found",
+    USER_NOT_FOUND: 'User not found',
   };
 
   constructor(userRepository: IUserRepository) {
     this.userRepository = userRepository;
-    this.pepper = process.env.PEPPER || "defaultPepper";
+    this.pepper = process.env.PEPPER || 'defaultPepper';
   }
 
   getUserByLogin = async (login: string): Promise<User | null> => {

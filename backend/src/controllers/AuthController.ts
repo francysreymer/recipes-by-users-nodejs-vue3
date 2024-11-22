@@ -1,20 +1,21 @@
-import { Request, Response, NextFunction } from "express";
-import { User } from "@/entities/User";
-import { StatusCodes } from "http-status-codes";
-import { AppDataSource } from "@/config/data-source";
-import { UserRepository } from "@/repositories/UserRepository";
-import { AuthService } from "@/services/AuthService";
-import { authSchema } from "@/validators/authValidator";
+import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+import { AppDataSource } from '@/config/data-source';
+import { User } from '@/entities/User';
+import { UserRepository } from '@/repositories/UserRepository';
+import { AuthService } from '@/services/AuthService';
+import { authSchema } from '@/validators/authValidator';
 
 export class AuthController {
   private authService: AuthService;
   private readonly ERROR_MESSAGES = {
-    VALIDATION_ERROR: "Validation error",
+    VALIDATION_ERROR: 'Validation error',
   };
 
   constructor() {
     const userRepository = new UserRepository(
-      AppDataSource.getRepository(User)
+      AppDataSource.getRepository(User),
     );
     this.authService = new AuthService(userRepository);
   }

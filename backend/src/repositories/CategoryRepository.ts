@@ -1,6 +1,7 @@
-import { Repository } from "typeorm";
-import { Category } from "@/entities/Category";
-import ICategoryRepository from "@/contracts/ICategoryRepository";
+import { Repository } from 'typeorm';
+
+import ICategoryRepository from '@/contracts/ICategoryRepository';
+import { Category } from '@/entities/Category';
 
 export class CategoryRepository implements ICategoryRepository {
   private repository: Repository<Category>;

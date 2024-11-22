@@ -1,6 +1,7 @@
-import { Repository } from "typeorm";
-import { User } from "@/entities/User";
-import IUserRepository from "@/contracts/IUserRepository";
+import { Repository } from 'typeorm';
+
+import IUserRepository from '@/contracts/IUserRepository';
+import { User } from '@/entities/User';
 
 export class UserRepository implements IUserRepository {
   private repository: Repository<User>;

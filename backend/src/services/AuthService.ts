@@ -1,24 +1,25 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import IUserRepository from "@/contracts/IUserRepository";
-import createError from "http-errors";
+import bcrypt from 'bcrypt';
+import createError from 'http-errors';
+import jwt from 'jsonwebtoken';
+
+import IUserRepository from '@/contracts/IUserRepository';
 
 export class AuthService {
   private userRepository: IUserRepository;
   private pepper: string;
-  private readonly EXPIRES_IN_1_HOUR = "1h";
+  private readonly EXPIRES_IN_1_HOUR = '1h';
   private readonly ERROR_MESSAGES = {
-    INVALID_LOGIN: "Invalid login or password",
+    INVALID_LOGIN: 'Invalid login or password',
   };
 
   constructor(userRepository: IUserRepository) {
     this.userRepository = userRepository;
-    this.pepper = process.env.PEPPER || "defaultPepper";
+    this.pepper = process.env.PEPPER || 'defaultPepper';
   }
 
   authenticate = async (
     login: string,
-    senha: string
+    senha: string,
   ): Promise<string | null> => {
     // Find user by login
     const user = await this.userRepository.findOneByLogin(login);
@@ -41,7 +42,7 @@ export class AuthService {
       process.env.JWT_SECRET!,
       {
         expiresIn: this.EXPIRES_IN_1_HOUR,
-      }
+      },
     );
 
     return token;

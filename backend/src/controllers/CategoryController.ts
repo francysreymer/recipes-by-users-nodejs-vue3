@@ -1,18 +1,19 @@
-import { Response, NextFunction } from "express";
-import { AppDataSource } from "@/config/data-source";
-import { CategoryService } from "@/services/CategoryService";
-import { CategoryRepository } from "@/repositories/CategoryRepository";
-import { Category } from "@/entities/Category";
-import { StatusCodes } from "http-status-codes";
-import { AuthRequest } from "@/middlewares/authJWTMiddleware";
-import { handleError } from "@/utils/errorHandler";
+import { Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+import { AppDataSource } from '@/config/data-source';
+import { Category } from '@/entities/Category';
+import { AuthRequest } from '@/middlewares/authJWTMiddleware';
+import { CategoryRepository } from '@/repositories/CategoryRepository';
+import { CategoryService } from '@/services/CategoryService';
+import { handleError } from '@/utils/errorHandler';
 
 export class CategoryController {
   private categoryService: CategoryService;
 
   constructor() {
     const categoryRepository = new CategoryRepository(
-      AppDataSource.getRepository(Category)
+      AppDataSource.getRepository(Category),
     );
     this.categoryService = new CategoryService(categoryRepository);
   }
@@ -20,12 +21,12 @@ export class CategoryController {
   getAllCategories = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const categories = await this.categoryService.getAllCategories();
       res.status(StatusCodes.OK).json(categories);
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleError(res, error);
     }
   };

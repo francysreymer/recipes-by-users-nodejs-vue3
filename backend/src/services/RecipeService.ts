@@ -1,15 +1,17 @@
-import { Recipe } from "@/entities/Recipe";
-import IRecipeRepository from "@/contracts/IRecipeRepository";
-import IRecipeService from "@/contracts/IRecipeService";
-import RecipeFilter from "@/types/RecipeFilter";
-import createError from "http-errors";
+import createError from 'http-errors';
+
+import IRecipeRepository from '@/contracts/IRecipeRepository';
+import IRecipeService from '@/contracts/IRecipeService';
+import { Recipe } from '@/entities/Recipe';
+import RecipeFilter from '@/types/RecipeFilter';
+
 
 export class RecipeService implements IRecipeService {
   private recipeRepository: IRecipeRepository;
   private readonly ERROR_MESSAGES = {
-    RECIPE_NOT_FOUND: "Recipe not found",
-    UNAUTHORIZED_ACCESS: "Unauthorized access to this recipe",
-    FAILED_TO_DELETE: "Failed to delete recipe",
+    RECIPE_NOT_FOUND: 'Recipe not found',
+    UNAUTHORIZED_ACCESS: 'Unauthorized access to this recipe',
+    FAILED_TO_DELETE: 'Failed to delete recipe',
   };
 
   constructor(recipeRepository: IRecipeRepository) {
@@ -18,14 +20,14 @@ export class RecipeService implements IRecipeService {
 
   getAllUserRecipes = async (
     userId: number,
-    filter?: RecipeFilter
+    filter?: RecipeFilter,
   ): Promise<Recipe[]> => {
     return await this.recipeRepository.findUserRecipes(userId, filter);
   };
 
   getUserRecipeById = async (
     id: number,
-    userId: number
+    userId: number,
   ): Promise<Recipe | null> => {
     const recipe = await this.recipeRepository.findOneById(id);
 
@@ -41,14 +43,14 @@ export class RecipeService implements IRecipeService {
   };
 
   createRecipe = async (recipe: Recipe, userId: number): Promise<Recipe> => {
-    recipe.id_usuarios = { id: userId } as Recipe["id_usuarios"];
+    recipe.id_usuarios = { id: userId } as Recipe['id_usuarios'];
     return await this.recipeRepository.save(recipe);
   };
 
   updateRecipe = async (
     recipe: Recipe,
     id: number,
-    userId: number
+    userId: number,
   ): Promise<Recipe> => {
     const existingRecipe = await this.recipeRepository.findOneById(id);
 
@@ -61,7 +63,7 @@ export class RecipeService implements IRecipeService {
     }
 
     recipe.id = id;
-    recipe.id_usuarios = { id: userId } as Recipe["id_usuarios"];
+    recipe.id_usuarios = { id: userId } as Recipe['id_usuarios'];
     return await this.recipeRepository.save(recipe);
   };
 

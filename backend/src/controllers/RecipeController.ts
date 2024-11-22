@@ -1,23 +1,24 @@
-import { Response, NextFunction } from "express";
-import { AppDataSource } from "@/config/data-source";
-import { RecipeService } from "@/services/RecipeService";
-import { RecipeRepository } from "@/repositories/RecipeRepository";
-import { Recipe } from "@/entities/Recipe";
-import { StatusCodes } from "http-status-codes";
-import { AuthRequest } from "@/middlewares/authJWTMiddleware";
-import { recipeSchema } from "@/validators/recipeValidator";
-import { handleError } from "@/utils/errorHandler";
+import { Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
+
+import { AppDataSource } from '@/config/data-source';
+import { Recipe } from '@/entities/Recipe';
+import { AuthRequest } from '@/middlewares/authJWTMiddleware';
+import { RecipeRepository } from '@/repositories/RecipeRepository';
+import { RecipeService } from '@/services/RecipeService';
+import { handleError, CustomError } from '@/utils/errorHandler';
+import { recipeSchema } from '@/validators/recipeValidator';
 
 export class RecipeController {
   private recipeService: RecipeService;
   private readonly ERROR_MESSAGES = {
-    VALIDATION_ERROR: "Validation error",
-    UNAUTHORIZED: "Unauthorized",
+    VALIDATION_ERROR: 'Validation error',
+    UNAUTHORIZED: 'Unauthorized',
   };
 
   constructor() {
     const recipeRepository = new RecipeRepository(
-      AppDataSource.getRepository(Recipe)
+      AppDataSource.getRepository(Recipe),
     );
     this.recipeService = new RecipeService(recipeRepository);
   }
@@ -25,7 +26,7 @@ export class RecipeController {
   getAllUserRecipes = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
@@ -41,18 +42,18 @@ export class RecipeController {
 
       const recipes = await this.recipeService.getAllUserRecipes(
         userId,
-        filter
+        filter,
       );
       res.status(StatusCodes.OK).json(recipes);
-    } catch (error: any) {
-      handleError(res, error);
+    } catch (error: unknown) {
+      handleError(res, error as CustomError);
     }
   };
 
   getUserRecipeById = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
@@ -60,10 +61,10 @@ export class RecipeController {
 
       const recipe = await this.recipeService.getUserRecipeById(
         recipeId,
-        userId
+        userId,
       );
       res.status(StatusCodes.OK).json(recipe);
-    } catch (error: any) {
+    } catch (error: CustomError) {
       handleError(res, error);
     }
   };
@@ -71,7 +72,7 @@ export class RecipeController {
   createUserRecipe = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { error, value } = recipeSchema.validate(req.body);
@@ -86,15 +87,15 @@ export class RecipeController {
       const userId = req.user?.id;
       const recipe = await this.recipeService.createRecipe(value, userId);
       res.status(StatusCodes.CREATED).json(recipe);
-    } catch (error: any) {
-      handleError(res, error);
+    } catch (error: unknown) {
+      handleError(res, error as CustomError);
     }
   };
 
   updateUserRecipe = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { error, value } = recipeSchema.validate(req.body);
@@ -111,18 +112,18 @@ export class RecipeController {
       const recipe = await this.recipeService.updateRecipe(
         value,
         recipeId,
-        userId
+        userId,
       );
       res.status(StatusCodes.OK).json(recipe);
-    } catch (error: any) {
-      handleError(res, error);
+    } catch (error: unknown) {
+      handleError(res, error as CustomError);
     }
   };
 
   deleteUserRecipe = async (
     req: AuthRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
@@ -130,8 +131,8 @@ export class RecipeController {
 
       await this.recipeService.deleteRecipe(recipeId, userId);
       res.status(StatusCodes.NO_CONTENT).end();
-    } catch (error: any) {
-      handleError(res, error);
+    } catch (error: unknown) {
+      handleError(res, error as CustomError);
     }
   };
 }

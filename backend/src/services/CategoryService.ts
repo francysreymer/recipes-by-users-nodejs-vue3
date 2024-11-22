@@ -1,6 +1,6 @@
-import { Category } from "@/entities/Category";
-import ICategoryRepository from "@/contracts/ICategoryRepository";
-import ICategoryService from "@/contracts/ICategoryService";
+import ICategoryRepository from '@/contracts/ICategoryRepository';
+import ICategoryService from '@/contracts/ICategoryService';
+import { Category } from '@/entities/Category';
 
 export class CategoryService implements ICategoryService {
   private categoryRepository: ICategoryRepository;

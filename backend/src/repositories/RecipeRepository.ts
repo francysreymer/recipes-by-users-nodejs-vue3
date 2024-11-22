@@ -1,7 +1,8 @@
-import { Repository } from "typeorm";
-import { Recipe } from "@/entities/Recipe";
-import IRecipeRepository from "@/contracts/IRecipeRepository";
-import RecipeFilter from "@/types/RecipeFilter";
+import { Repository } from 'typeorm';
+
+import IRecipeRepository from '@/contracts/IRecipeRepository';
+import { Recipe } from '@/entities/Recipe';
+import RecipeFilter from '@/types/RecipeFilter';
 
 export class RecipeRepository implements IRecipeRepository {
   private repository: Repository<Recipe>;
@@ -12,9 +13,9 @@ export class RecipeRepository implements IRecipeRepository {
 
   async findUserRecipes(
     userId: number,
-    filter?: RecipeFilter
+    filter?: RecipeFilter,
   ): Promise<Recipe[]> {
-    const where: any = { id_usuarios: { id: userId } };
+    const where: RecipeFilter = { id_usuarios: { id: userId } };
 
     if (filter) {
       if (filter.nome) {
@@ -27,14 +28,14 @@ export class RecipeRepository implements IRecipeRepository {
 
     return await this.repository.find({
       where,
-      relations: ["id_categorias"],
+      relations: ['id_categorias'],
     });
   }
 
   async findOneById(id: number): Promise<Recipe | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: ["id_usuarios", "id_categorias"],
+      relations: ['id_usuarios', 'id_categorias'],
       select: {
         id: true,
         nome: true,
