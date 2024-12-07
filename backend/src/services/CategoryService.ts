@@ -9,7 +9,7 @@ export class CategoryService implements ICategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  getAllCategories = async (): Promise<Category[]> => {
+  findAll = async (): Promise<Category[]> => {
     return await this.categoryRepository.findAll();
   };
 }

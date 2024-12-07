@@ -1,34 +1,30 @@
 import createError from 'http-errors';
 
-import IRecipeRepository from '@/contracts/IRecipeRepository';
-import IRecipeService from '@/contracts/IRecipeService';
+import IRecipeByUserRepository from '@/contracts/IRecipeByUserRepository';
+import IRecipeByUserService from '@/contracts/IRecipeByUserService';
 import { Recipe } from '@/entities/Recipe';
 import RecipeFilter from '@/types/RecipeFilter';
 
-
-export class RecipeService implements IRecipeService {
-  private recipeRepository: IRecipeRepository;
+export class RecipeByUserService implements IRecipeByUserService {
+  private recipeRepository: IRecipeByUserRepository;
   private readonly ERROR_MESSAGES = {
     RECIPE_NOT_FOUND: 'Recipe not found',
     UNAUTHORIZED_ACCESS: 'Unauthorized access to this recipe',
     FAILED_TO_DELETE: 'Failed to delete recipe',
   };
 
-  constructor(recipeRepository: IRecipeRepository) {
+  constructor(recipeRepository: IRecipeByUserRepository) {
     this.recipeRepository = recipeRepository;
   }
 
-  getAllUserRecipes = async (
+  findAll = async (
     userId: number,
     filter?: RecipeFilter,
   ): Promise<Recipe[]> => {
     return await this.recipeRepository.findUserRecipes(userId, filter);
   };
 
-  getUserRecipeById = async (
-    id: number,
-    userId: number,
-  ): Promise<Recipe | null> => {
+  findById = async (id: number, userId: number): Promise<Recipe | null> => {
     const recipe = await this.recipeRepository.findOneById(id);
 
     if (!recipe) {
@@ -42,12 +38,12 @@ export class RecipeService implements IRecipeService {
     return recipe;
   };
 
-  createRecipe = async (recipe: Recipe, userId: number): Promise<Recipe> => {
+  create = async (recipe: Recipe, userId: number): Promise<Recipe> => {
     recipe.id_usuarios = { id: userId } as Recipe['id_usuarios'];
     return await this.recipeRepository.save(recipe);
   };
 
-  updateRecipe = async (
+  update = async (
     recipe: Recipe,
     id: number,
     userId: number,
@@ -67,7 +63,7 @@ export class RecipeService implements IRecipeService {
     return await this.recipeRepository.save(recipe);
   };
 
-  deleteRecipe = async (id: number, userId: number): Promise<void> => {
+  delete = async (id: number, userId: number): Promise<void> => {
     const existingRecipe = await this.recipeRepository.findOneById(id);
 
     if (!existingRecipe) {

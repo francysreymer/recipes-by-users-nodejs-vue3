@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import { formatErrors } from '@/common/formatErrors';
+import { handleHttpError } from '@/common/handleHttpError';
 import { AppDataSource } from '@/config/data-source';
 import { User } from '@/entities/User';
 import { UserRepository } from '@/repositories/UserRepository';
@@ -9,9 +11,6 @@ import { authSchema } from '@/validators/authValidator';
 
 export class AuthController {
   private authService: AuthService;
-  private readonly ERROR_MESSAGES = {
-    VALIDATION_ERROR: 'Validation error',
-  };
 
   constructor() {
     const userRepository = new UserRepository(
@@ -25,10 +24,7 @@ export class AuthController {
       const { error, value } = authSchema.validate(req.body);
 
       if (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: this.ERROR_MESSAGES.VALIDATION_ERROR,
-          details: error.details,
-        });
+        return res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
       }
 
       const { login, senha } = value;
@@ -36,13 +32,16 @@ export class AuthController {
       const token = await this.authService.authenticate(login, senha);
       return res.json({ token });
     } catch (error) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: error.message });
+      return handleHttpError(res, error);
     }
   }
 
-  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async logout(
+    req: Request,
+    res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: NextFunction,
+  ): Promise<void> {
     res.json({ auth: false, token: null });
   }
 }

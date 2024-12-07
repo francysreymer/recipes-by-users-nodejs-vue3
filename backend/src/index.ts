@@ -5,7 +5,7 @@ import express from 'express';
 
 import authRoutes from '@/routes/authRoutes';
 import categoryRoutes from '@/routes/categoryRoutes';
-import recipeRoutes from '@/routes/recipeRoutes';
+import recipeByUserRoutes from '@/routes/recipeByUserRoutes';
 import userRoutes from '@/routes/userRoutes';
 import DatabaseService from '@/services/DatabaseService';
 
@@ -25,7 +25,7 @@ app.use(
   }),
 );
 app.use('/api', authRoutes);
-app.use('/api', recipeRoutes);
+app.use('/api', recipeByUserRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 

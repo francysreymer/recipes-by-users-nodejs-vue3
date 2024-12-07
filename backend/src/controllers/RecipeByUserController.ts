@@ -1,31 +1,29 @@
 import { Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import { formatErrors } from '@/common/formatErrors';
+import { handleHttpError } from '@/common/handleHttpError';
 import { AppDataSource } from '@/config/data-source';
 import { Recipe } from '@/entities/Recipe';
 import { AuthRequest } from '@/middlewares/authJWTMiddleware';
 import { RecipeRepository } from '@/repositories/RecipeRepository';
-import { RecipeService } from '@/services/RecipeService';
-import { handleError, CustomError } from '@/utils/errorHandler';
+import { RecipeByUserService } from '@/services/RecipeByUserService';
 import { recipeSchema } from '@/validators/recipeValidator';
 
-export class RecipeController {
-  private recipeService: RecipeService;
-  private readonly ERROR_MESSAGES = {
-    VALIDATION_ERROR: 'Validation error',
-    UNAUTHORIZED: 'Unauthorized',
-  };
+export class RecipeByUserController {
+  private recipeByUserService: RecipeByUserService;
 
   constructor() {
     const recipeRepository = new RecipeRepository(
       AppDataSource.getRepository(Recipe),
     );
-    this.recipeService = new RecipeService(recipeRepository);
+    this.recipeByUserService = new RecipeByUserService(recipeRepository);
   }
 
-  getAllUserRecipes = async (
+  findAll = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
@@ -40,99 +38,91 @@ export class RecipeController {
           : undefined,
       };
 
-      const recipes = await this.recipeService.getAllUserRecipes(
-        userId,
-        filter,
-      );
+      const recipes = await this.recipeByUserService.findAll(userId, filter);
       res.status(StatusCodes.OK).json(recipes);
     } catch (error: unknown) {
-      handleError(res, error as CustomError);
+      handleHttpError(res, error);
     }
   };
 
-  getUserRecipeById = async (
+  findById = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
       const recipeId = parseInt(req.params.id, 10);
 
-      const recipe = await this.recipeService.getUserRecipeById(
-        recipeId,
-        userId,
-      );
+      const recipe = await this.recipeByUserService.findById(recipeId, userId);
       res.status(StatusCodes.OK).json(recipe);
-    } catch (error: CustomError) {
-      handleError(res, error);
+    } catch (error: unknown) {
+      handleHttpError(res, error);
     }
   };
 
-  createUserRecipe = async (
+  create = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
       const { error, value } = recipeSchema.validate(req.body);
       if (error) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          message: this.ERROR_MESSAGES.VALIDATION_ERROR,
-          details: error.details,
-        });
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
         return;
       }
 
       const userId = req.user?.id;
-      const recipe = await this.recipeService.createRecipe(value, userId);
+      const recipe = await this.recipeByUserService.create(value, userId);
       res.status(StatusCodes.CREATED).json(recipe);
     } catch (error: unknown) {
-      handleError(res, error as CustomError);
+      handleHttpError(res, error);
     }
   };
 
-  updateUserRecipe = async (
+  update = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
       const { error, value } = recipeSchema.validate(req.body);
       if (error) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-          message: this.ERROR_MESSAGES.VALIDATION_ERROR,
-          details: error.details,
-        });
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
         return;
       }
 
       const userId = req.user?.id;
       const recipeId = parseInt(req.params.id, 10);
-      const recipe = await this.recipeService.updateRecipe(
+      const recipe = await this.recipeByUserService.update(
         value,
         recipeId,
         userId,
       );
       res.status(StatusCodes.OK).json(recipe);
     } catch (error: unknown) {
-      handleError(res, error as CustomError);
+      handleHttpError(res, error);
     }
   };
 
-  deleteUserRecipe = async (
+  delete = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
       const recipeId = parseInt(req.params.id, 10);
 
-      await this.recipeService.deleteRecipe(recipeId, userId);
+      await this.recipeByUserService.delete(recipeId, userId);
       res.status(StatusCodes.NO_CONTENT).end();
     } catch (error: unknown) {
-      handleError(res, error as CustomError);
+      handleHttpError(res, error);
     }
   };
 }

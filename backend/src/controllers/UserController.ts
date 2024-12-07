@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import { formatErrors } from '@/common/formatErrors';
+import { handleHttpError } from '@/common/handleHttpError';
 import { AppDataSource } from '@/config/data-source';
 import { User } from '@/entities/User';
 import { UserRepository } from '@/repositories/UserRepository';
@@ -22,18 +24,13 @@ export class UserController {
       const { error, value } = userSchema.validate(req.body);
 
       if (error) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: 'Validation error',
-          details: error.details,
-        });
+        return res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
       }
 
       const user = await this.userService.createUser(value);
       return res.status(StatusCodes.CREATED).json(user);
     } catch (error) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ message: error.message });
+      return handleHttpError(res, error);
     }
   };
 }

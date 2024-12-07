@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 
-import IRecipeRepository from '@/contracts/IRecipeRepository';
+import IRecipeByUserRepository from '@/contracts/IRecipeByUserRepository';
 import { Recipe } from '@/entities/Recipe';
 import RecipeFilter from '@/types/RecipeFilter';
 
-export class RecipeRepository implements IRecipeRepository {
+export class RecipeRepository implements IRecipeByUserRepository {
   private repository: Repository<Recipe>;
 
   constructor(repository: Repository<Recipe>) {

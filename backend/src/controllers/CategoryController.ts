@@ -1,12 +1,12 @@
 import { Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import { handleHttpError } from '@/common/handleHttpError';
 import { AppDataSource } from '@/config/data-source';
 import { Category } from '@/entities/Category';
 import { AuthRequest } from '@/middlewares/authJWTMiddleware';
 import { CategoryRepository } from '@/repositories/CategoryRepository';
 import { CategoryService } from '@/services/CategoryService';
-import { handleError } from '@/utils/errorHandler';
 
 export class CategoryController {
   private categoryService: CategoryService;
@@ -18,16 +18,17 @@ export class CategoryController {
     this.categoryService = new CategoryService(categoryRepository);
   }
 
-  getAllCategories = async (
+  findAll = async (
     req: AuthRequest,
     res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const categories = await this.categoryService.getAllCategories();
+      const categories = await this.categoryService.findAll();
       res.status(StatusCodes.OK).json(categories);
     } catch (error: unknown) {
-      handleError(res, error);
+      handleHttpError(res, error);
     }
   };
 }

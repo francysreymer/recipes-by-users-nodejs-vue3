@@ -9,7 +9,7 @@ const categoryController = new CategoryController();
 categoryRoutes.get(
   '/categories',
   authJWTMiddleware,
-  categoryController.getAllCategories,
+  categoryController.findAll,
 );
 
 export default categoryRoutes;

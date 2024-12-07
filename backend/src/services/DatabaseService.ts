@@ -5,8 +5,6 @@ class DatabaseService {
   public async initializeDatabase(): Promise<void> {
     try {
       await AppDataSource.initialize();
-      console.log('Database initialized.');
-
       await this.insertInitialData();
     } catch (error) {
       console.error('Error during Data Source initialization:', error);
