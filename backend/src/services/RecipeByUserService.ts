@@ -10,7 +10,6 @@ export class RecipeByUserService implements IRecipeByUserService {
   private readonly ERROR_MESSAGES = {
     RECIPE_NOT_FOUND: 'Recipe not found',
     UNAUTHORIZED_ACCESS: 'Unauthorized access to this recipe',
-    FAILED_TO_DELETE: 'Failed to delete recipe',
   };
 
   constructor(recipeRepository: IRecipeByUserRepository) {
@@ -76,7 +75,9 @@ export class RecipeByUserService implements IRecipeByUserService {
 
     const deleted = await this.recipeRepository.delete(id);
     if (!deleted) {
-      throw new createError.BadRequest(this.ERROR_MESSAGES.FAILED_TO_DELETE);
+      throw new createError.BadRequest(
+        `Failed to delete recipe with id: ${id}`,
+      );
     }
   };
 }

@@ -8,6 +8,8 @@ import { Recipe } from '@/entities/Recipe';
 import { AuthRequest } from '@/middlewares/authJWTMiddleware';
 import { RecipeRepository } from '@/repositories/RecipeRepository';
 import { RecipeByUserService } from '@/services/RecipeByUserService';
+import { idSchema } from '@/validators/idSchema';
+import { recipeByUserFilterSchema } from '@/validators/recipeByUserFilterSchema';
 import { recipeSchema } from '@/validators/recipeValidator';
 
 export class RecipeByUserController {
@@ -29,16 +31,19 @@ export class RecipeByUserController {
     try {
       const userId = req.user?.id;
 
-      // Extract filter parameters
-      const { nome, tempo_preparo_minutos } = req.query;
-      const filter = {
-        nome: nome ? String(nome) : undefined,
-        tempo_preparo_minutos: tempo_preparo_minutos
-          ? parseInt(String(tempo_preparo_minutos), 10)
-          : undefined,
-      };
+      const { error, value: filters } = recipeByUserFilterSchema.validate(
+        req.query,
+        {
+          stripUnknown: true,
+          abortEarly: false,
+        },
+      );
 
-      const recipes = await this.recipeByUserService.findAll(userId, filter);
+      if (error) {
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
+      }
+
+      const recipes = await this.recipeByUserService.findAll(userId, filters);
       res.status(StatusCodes.OK).json(recipes);
     } catch (error: unknown) {
       handleHttpError(res, error);
@@ -53,7 +58,14 @@ export class RecipeByUserController {
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
-      const recipeId = parseInt(req.params.id, 10);
+
+      const { error: idRecipeError, value: recipeId } = idSchema.validate(
+        req.params.id,
+      );
+
+      if (idRecipeError) {
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(idRecipeError));
+      }
 
       const recipe = await this.recipeByUserService.findById(recipeId, userId);
       res.status(StatusCodes.OK).json(recipe);
@@ -69,13 +81,14 @@ export class RecipeByUserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
+      const userId = req.user?.id;
+
       const { error, value } = recipeSchema.validate(req.body);
       if (error) {
         res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
         return;
       }
 
-      const userId = req.user?.id;
       const recipe = await this.recipeByUserService.create(value, userId);
       res.status(StatusCodes.CREATED).json(recipe);
     } catch (error: unknown) {
@@ -90,14 +103,22 @@ export class RecipeByUserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
+      const userId = req.user?.id;
+
+      const { error: idRecipeError, value: recipeId } = idSchema.validate(
+        req.params.id,
+      );
+
+      if (idRecipeError) {
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(idRecipeError));
+      }
+
       const { error, value } = recipeSchema.validate(req.body);
       if (error) {
         res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
         return;
       }
 
-      const userId = req.user?.id;
-      const recipeId = parseInt(req.params.id, 10);
       const recipe = await this.recipeByUserService.update(
         value,
         recipeId,
@@ -117,7 +138,13 @@ export class RecipeByUserController {
   ): Promise<void> => {
     try {
       const userId = req.user?.id;
-      const recipeId = parseInt(req.params.id, 10);
+      const { error: idRecipeError, value: recipeId } = idSchema.validate(
+        req.params.id,
+      );
+
+      if (idRecipeError) {
+        res.status(StatusCodes.BAD_REQUEST).json(formatErrors(idRecipeError));
+      }
 
       await this.recipeByUserService.delete(recipeId, userId);
       res.status(StatusCodes.NO_CONTENT).end();
