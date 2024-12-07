@@ -11,7 +11,7 @@ export class RecipeRepository implements IRecipeByUserRepository {
     this.repository = repository;
   }
 
-  async findUserRecipes(
+  async findRecipesByUser(
     userId: number,
     filter?: RecipeFilter,
   ): Promise<Recipe[]> {

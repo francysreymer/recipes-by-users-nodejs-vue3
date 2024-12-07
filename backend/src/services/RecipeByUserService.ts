@@ -20,7 +20,7 @@ export class RecipeByUserService implements IRecipeByUserService {
     userId: number,
     filter?: RecipeFilter,
   ): Promise<Recipe[]> => {
-    return await this.recipeRepository.findUserRecipes(userId, filter);
+    return await this.recipeRepository.findRecipesByUser(userId, filter);
   };
 
   findById = async (id: number, userId: number): Promise<Recipe | null> => {
