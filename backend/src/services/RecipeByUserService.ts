@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import IRecipeByUserRepository from '@/contracts/IRecipeByUserRepository';
 import IRecipeByUserService from '@/contracts/IRecipeByUserService';
 import { Recipe } from '@/entities/Recipe';
-import RecipeFilter from '@/types/RecipeFilter';
+import RecipeFilter from '@/common/RecipeFilter';
 
 export class RecipeByUserService implements IRecipeByUserService {
   private recipeRepository: IRecipeByUserRepository;
