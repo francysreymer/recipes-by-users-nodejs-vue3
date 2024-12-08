@@ -1,44 +1,42 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
+import { injectable, inject } from 'inversify';
 import jwt from 'jsonwebtoken';
 
+import TYPES from '@/config/types';
+import IAuthService from '@/contracts/IAuthService';
 import IUserRepository from '@/contracts/IUserRepository';
 
-export class AuthService {
+@injectable()
+export class AuthService implements IAuthService {
   private userRepository: IUserRepository;
   private pepper: string;
   private readonly EXPIRES_IN_1_HOUR = '1h';
-  private readonly ERROR_MESSAGES = {
-    INVALID_LOGIN: 'Invalid login or password',
-  };
 
-  constructor(userRepository: IUserRepository) {
+  constructor(@inject(TYPES.IUserRepository) userRepository: IUserRepository) {
     this.userRepository = userRepository;
     this.pepper = process.env.PEPPER || 'defaultPepper';
   }
 
-  authenticate = async (
-    login: string,
-    senha: string,
-  ): Promise<string | null> => {
+  authenticate = async (login: string, password: string): Promise<string> => {
     // Find user by login
     const user = await this.userRepository.findOneByLogin(login);
 
     // Add pepper to the provided password
-    const pepperedPassword = senha + this.pepper;
+    const pepperedPassword = password + this.pepper;
 
     // Check password
     const isMatch = user
-      ? await bcrypt.compare(pepperedPassword, user.senha)
+      ? await bcrypt.compare(pepperedPassword, user.password)
       : false;
 
     if (!user || !isMatch) {
-      throw new createError.Unauthorized(this.ERROR_MESSAGES.INVALID_LOGIN);
+      throw new createError.Unauthorized('Invalid login or password');
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: user.id, login: user.login, name: user.nome },
+      { id: user.id, login: user.login, name: user.name },
       process.env.JWT_SECRET!,
       {
         expiresIn: this.EXPIRES_IN_1_HOUR,

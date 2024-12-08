@@ -1,5 +1,5 @@
-import { Recipe } from '@/entities/Recipe';
 import RecipeFilter from '@/common/RecipeFilter';
+import { Recipe } from '@/entities/Recipe';
 
 export default interface IRecipeByUserService {
   findAll(userId: number, filter?: RecipeFilter): Promise<Recipe[]>;

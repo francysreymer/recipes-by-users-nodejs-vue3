@@ -3,7 +3,7 @@ import Joi from 'joi';
 export const userSchema = Joi.object({
   nome: Joi.string().required(),
   login: Joi.string().required(),
-  senha: Joi.string()
+  password: Joi.string()
     .pattern(new RegExp('^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$'))
     .required()
     .messages({

@@ -1,22 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { inject, injectable } from 'inversify';
 
 import { formatErrors } from '@/common/formatErrors';
 import { handleHttpError } from '@/common/handleHttpError';
-import { AppDataSource } from '@/config/data-source';
-import { User } from '@/entities/User';
-import { UserRepository } from '@/repositories/UserRepository';
-import { AuthService } from '@/services/AuthService';
+import TYPES from '@/config/types';
+import IAuthService from '@/contracts/IAuthService';
 import { authSchema } from '@/validators/authValidator';
 
+@injectable()
 export class AuthController {
-  private authService: AuthService;
+  private authService: IAuthService;
 
-  constructor() {
-    const userRepository = new UserRepository(
-      AppDataSource.getRepository(User),
-    );
-    this.authService = new AuthService(userRepository);
+  constructor(@inject(TYPES.IAuthService) authService: IAuthService) {
+    this.authService = authService;
   }
 
   async login(req: Request, res: Response): Promise<Response> {
@@ -27,9 +24,9 @@ export class AuthController {
         return res.status(StatusCodes.BAD_REQUEST).json(formatErrors(error));
       }
 
-      const { login, senha } = value;
+      const { login, password } = value;
 
-      const token = await this.authService.authenticate(login, senha);
+      const token = await this.authService.authenticate(login, password);
       return res.json({ token });
     } catch (error) {
       return handleHttpError(res, error);

@@ -1,22 +1,19 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { inject, injectable } from 'inversify';
 
 import { formatErrors } from '@/common/formatErrors';
 import { handleHttpError } from '@/common/handleHttpError';
-import { AppDataSource } from '@/config/data-source';
-import { User } from '@/entities/User';
-import { UserRepository } from '@/repositories/UserRepository';
-import { UserService } from '@/services/UserService';
+import TYPES from '@/config/types';
+import IUserService from '@/contracts/IUserService';
 import { userSchema } from '@/validators/userValidator';
 
+@injectable()
 export class UserController {
-  private userService: UserService;
+  private userService: IUserService;
 
-  constructor() {
-    const userRepository = new UserRepository(
-      AppDataSource.getRepository(User),
-    );
-    this.userService = new UserService(userRepository);
+  constructor(@inject(TYPES.IUserService) userService: IUserService) {
+    this.userService = userService;
   }
 
   register = async (req: Request, res: Response): Promise<Response> => {

@@ -1,10 +1,14 @@
 import { Router } from 'express';
 
+import container from '@/config/container';
+import TYPES from '@/config/types';
 import { RecipeByUserController } from '@/controllers/RecipeByUserController';
 import { authJWTMiddleware } from '@/middlewares/authJWTMiddleware';
 
 const recipeByUserRoutes = Router();
-const recipeByUserController = new RecipeByUserController();
+const recipeByUserController = container.get<RecipeByUserController>(
+  TYPES.RecipeByUserController,
+);
 
 recipeByUserRoutes.get(
   '/recipes',

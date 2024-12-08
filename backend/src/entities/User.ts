@@ -7,24 +7,24 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('usuarios')
+@Entity('users')
 @Unique(['login'])
 export class User {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, comment: '\n' })
   id: number;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  nome: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
   login: string;
 
   @Column({ type: 'varchar', length: 100, nullable: false })
-  senha: string;
+  password: string;
 
-  @CreateDateColumn({ type: 'datetime', nullable: false })
-  criado_em: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime', nullable: false })
-  alterado_em: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt!: Date;
 }

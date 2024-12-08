@@ -2,21 +2,21 @@ import 'reflect-metadata';
 import cors from 'cors';
 import dotenvSafe from 'dotenv-safe';
 import express from 'express';
+import { DataSource } from 'typeorm';
 
+import container from '@/config/container';
+import TYPES from '@/config/types';
 import authRoutes from '@/routes/authRoutes';
 import categoryRoutes from '@/routes/categoryRoutes';
 import recipeByUserRoutes from '@/routes/recipeByUserRoutes';
 import userRoutes from '@/routes/userRoutes';
-import DatabaseService from '@/services/DatabaseService';
 
-// Load environment variables from .env file and ensure required variables are set
 dotenvSafe.config({
   allowEmptyValues: true,
 });
 
 const app = express();
 app.use(express.json());
-// Use the CORS middleware
 app.use(
   cors({
     origin: 'http://localhost:8082', // Allow requests from this origin
@@ -29,16 +29,17 @@ app.use('/api', recipeByUserRoutes);
 app.use('/api', userRoutes);
 app.use('/api', categoryRoutes);
 
-const PORT = process.env.APP_PORT || 3002;
+const PORT = process.env.APP_PORT || 3000;
 
 (async () => {
   try {
-    await DatabaseService.initializeDatabase();
+    const db = container.get<DataSource>(TYPES.DB);
+    await db.initialize();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error('Failed to connect to the database:', error);
+    console.error('Error during application startup:', error);
   }
 })();
-
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
-});

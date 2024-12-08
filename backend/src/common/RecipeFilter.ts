@@ -1,7 +1,6 @@
 type RecipeFilter = {
-  nome?: string;
-  tempo_preparo_minutos?: number;
-  id_usuarios?: { id: number };
+  name?: string;
+  preparation_time_minutes?: number;
 };
 
 export default RecipeFilter;

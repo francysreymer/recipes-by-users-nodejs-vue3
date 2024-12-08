@@ -11,7 +11,7 @@ import {
 import { Category } from '@/entities/Category';
 import { User } from '@/entities/User';
 
-@Entity('receitas')
+@Entity('recipes')
 export class Recipe {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
@@ -20,34 +20,34 @@ export class Recipe {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'id_usuarios' })
-  id_usuarios: User;
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @ManyToOne(() => Category, (category) => category.id, {
-    onDelete: 'CASCADE',
+    onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'id_categorias' })
-  id_categorias: Category;
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 
   @Column({ type: 'varchar', length: 45, nullable: true })
-  nome: string;
+  name: string;
 
   @Column({ type: 'int', unsigned: true, nullable: true })
-  tempo_preparo_minutos: number;
+  preparation_time_minutes: number;
 
   @Column({ type: 'int', unsigned: true, nullable: true })
-  porcoes: number;
+  servings: number;
 
   @Column({ type: 'text', nullable: false })
-  modo_preparo: string;
+  preparation_method: string;
 
   @Column({ type: 'text', nullable: true })
-  ingredientes: string;
+  ingredients: string;
 
-  @CreateDateColumn({ type: 'datetime', nullable: false })
-  criado_em: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime', nullable: false })
-  alterado_em: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt!: Date;
 }

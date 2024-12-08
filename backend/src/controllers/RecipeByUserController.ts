@@ -1,25 +1,25 @@
 import { Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { inject, injectable } from 'inversify';
 
 import { formatErrors } from '@/common/formatErrors';
 import { handleHttpError } from '@/common/handleHttpError';
-import { AppDataSource } from '@/config/data-source';
-import { Recipe } from '@/entities/Recipe';
+import TYPES from '@/config/types';
+import IRecipeByUserService from '@/contracts/IRecipeByUserService';
 import { AuthRequest } from '@/middlewares/authJWTMiddleware';
-import { RecipeRepository } from '@/repositories/RecipeRepository';
-import { RecipeByUserService } from '@/services/RecipeByUserService';
 import { idSchema } from '@/validators/idSchema';
 import { recipeByUserFilterSchema } from '@/validators/recipeByUserFilterSchema';
 import { recipeSchema } from '@/validators/recipeValidator';
 
+@injectable()
 export class RecipeByUserController {
-  private recipeByUserService: RecipeByUserService;
+  private recipeByUserService: IRecipeByUserService;
 
-  constructor() {
-    const recipeRepository = new RecipeRepository(
-      AppDataSource.getRepository(Recipe),
-    );
-    this.recipeByUserService = new RecipeByUserService(recipeRepository);
+  constructor(
+    @inject(TYPES.IRecipeByUserService)
+    recipeByUserService: IRecipeByUserService,
+  ) {
+    this.recipeByUserService = recipeByUserService;
   }
 
   findAll = async (

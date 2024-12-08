@@ -1,11 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity('categorias')
-@Unique(['nome'])
+@Entity('categories')
+@Unique(['name'])
 export class Category {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  nome: string;
+  name: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt!: Date;
 }

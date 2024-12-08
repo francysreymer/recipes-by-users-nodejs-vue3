@@ -1,18 +1,18 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
+import { injectable, inject } from 'inversify';
 
+import TYPES from '@/config/types';
 import IUserRepository from '@/contracts/IUserRepository';
 import IUserService from '@/contracts/IUserService';
 import { User } from '@/entities/User';
 
+@injectable()
 export class UserService implements IUserService {
   private userRepository: IUserRepository;
   private pepper: string;
-  private readonly ERROR_MESSAGES = {
-    USER_NOT_FOUND: 'User not found',
-  };
 
-  constructor(userRepository: IUserRepository) {
+  constructor(@inject(TYPES.IUserRepository) userRepository: IUserRepository) {
     this.userRepository = userRepository;
     this.pepper = process.env.PEPPER || 'defaultPepper';
   }
@@ -20,7 +20,7 @@ export class UserService implements IUserService {
   getUserByLogin = async (login: string): Promise<User | null> => {
     const user = await this.userRepository.findOneByLogin(login);
     if (!user) {
-      throw createError.NotFound(this.ERROR_MESSAGES.USER_NOT_FOUND);
+      throw createError.NotFound('User not found');
     }
 
     return user;
@@ -29,8 +29,8 @@ export class UserService implements IUserService {
   createUser = async (user: User): Promise<User> => {
     // Hash the password with salt and pepper before saving the user
     const saltRounds = 10;
-    const saltedPassword = user.senha + this.pepper;
-    user.senha = await bcrypt.hash(saltedPassword, saltRounds);
+    const saltedPassword = user.password + this.pepper;
+    user.password = await bcrypt.hash(saltedPassword, saltRounds);
 
     return await this.userRepository.save(user);
   };

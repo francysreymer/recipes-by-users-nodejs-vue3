@@ -1,18 +1,22 @@
 import createError from 'http-errors';
+import { injectable, inject } from 'inversify';
 
-import IRecipeByUserRepository from '@/contracts/IRecipeByUserRepository';
-import IRecipeByUserService from '@/contracts/IRecipeByUserService';
-import { Recipe } from '@/entities/Recipe';
 import RecipeFilter from '@/common/RecipeFilter';
+import TYPES from '@/config/types';
+import IRecipeByUserService from '@/contracts/IRecipeByUserService';
+import IRecipeRepository from '@/contracts/IRecipeRepository';
+import { Recipe } from '@/entities/Recipe';
+import { User } from '@/entities/User';
 
+@injectable()
 export class RecipeByUserService implements IRecipeByUserService {
-  private recipeRepository: IRecipeByUserRepository;
-  private readonly ERROR_MESSAGES = {
-    RECIPE_NOT_FOUND: 'Recipe not found',
-    UNAUTHORIZED_ACCESS: 'Unauthorized access to this recipe',
-  };
+  private recipeRepository: IRecipeRepository;
+  private readonly RECIPE_NOT_FOUND = 'Recipe not found';
+  private readonly UNAUTHORIZED_ACCESS = 'Unauthorized access to this recipe';
 
-  constructor(recipeRepository: IRecipeByUserRepository) {
+  constructor(
+    @inject(TYPES.IRecipeRepository) recipeRepository: IRecipeRepository,
+  ) {
     this.recipeRepository = recipeRepository;
   }
 
@@ -27,18 +31,18 @@ export class RecipeByUserService implements IRecipeByUserService {
     const recipe = await this.recipeRepository.findOneById(id);
 
     if (!recipe) {
-      throw new createError.NotFound(this.ERROR_MESSAGES.RECIPE_NOT_FOUND);
+      throw new createError.NotFound(this.RECIPE_NOT_FOUND);
     }
 
-    if (recipe.id_usuarios.id !== userId) {
-      throw new createError.Forbidden(this.ERROR_MESSAGES.UNAUTHORIZED_ACCESS);
+    if (recipe.user.id !== userId) {
+      throw new createError.Forbidden(this.UNAUTHORIZED_ACCESS);
     }
 
     return recipe;
   };
 
   create = async (recipe: Recipe, userId: number): Promise<Recipe> => {
-    recipe.id_usuarios = { id: userId } as Recipe['id_usuarios'];
+    recipe.user = { id: userId } as User;
     return await this.recipeRepository.save(recipe);
   };
 
@@ -50,15 +54,15 @@ export class RecipeByUserService implements IRecipeByUserService {
     const existingRecipe = await this.recipeRepository.findOneById(id);
 
     if (!existingRecipe) {
-      throw new createError.NotFound(this.ERROR_MESSAGES.RECIPE_NOT_FOUND);
+      throw new createError.NotFound(this.RECIPE_NOT_FOUND);
     }
 
-    if (existingRecipe.id_usuarios.id !== userId) {
-      throw new createError.Forbidden(this.ERROR_MESSAGES.UNAUTHORIZED_ACCESS);
+    if (existingRecipe.user.id !== userId) {
+      throw new createError.Forbidden(this.UNAUTHORIZED_ACCESS);
     }
 
     recipe.id = id;
-    recipe.id_usuarios = { id: userId } as Recipe['id_usuarios'];
+    recipe.user = { id: userId } as User;
     return await this.recipeRepository.save(recipe);
   };
 
@@ -66,11 +70,11 @@ export class RecipeByUserService implements IRecipeByUserService {
     const existingRecipe = await this.recipeRepository.findOneById(id);
 
     if (!existingRecipe) {
-      throw new createError.NotFound(this.ERROR_MESSAGES.RECIPE_NOT_FOUND);
+      throw new createError.NotFound(this.RECIPE_NOT_FOUND);
     }
 
-    if (existingRecipe.id_usuarios.id !== userId) {
-      throw new createError.Forbidden(this.ERROR_MESSAGES.UNAUTHORIZED_ACCESS);
+    if (existingRecipe.user.id !== userId) {
+      throw new createError.Forbidden(this.UNAUTHORIZED_ACCESS);
     }
 
     const deleted = await this.recipeRepository.delete(id);

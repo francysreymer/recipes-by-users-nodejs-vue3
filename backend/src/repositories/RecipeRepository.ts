@@ -1,13 +1,16 @@
+import { injectable, inject } from 'inversify';
 import { Repository } from 'typeorm';
 
 import RecipeFilter from '@/common/RecipeFilter';
-import IRecipeByUserRepository from '@/contracts/IRecipeByUserRepository';
+import TYPES from '@/config/types';
+import IRecipeRepository from '@/contracts/IRecipeRepository';
 import { Recipe } from '@/entities/Recipe';
 
-export class RecipeRepository implements IRecipeByUserRepository {
+@injectable()
+export class RecipeRepository implements IRecipeRepository {
   private repository: Repository<Recipe>;
 
-  constructor(repository: Repository<Recipe>) {
+  constructor(@inject(TYPES.DB) repository: Repository<Recipe>) {
     this.repository = repository;
   }
 
@@ -15,44 +18,48 @@ export class RecipeRepository implements IRecipeByUserRepository {
     userId: number,
     filter?: RecipeFilter,
   ): Promise<Recipe[]> {
-    const where: RecipeFilter = { id_usuarios: { id: userId } };
+    const query = this.repository
+      .createQueryBuilder('recipe')
+      .where('recipe.user_id = :userId', { userId });
 
     if (filter) {
-      if (filter.nome) {
-        where.nome = filter.nome;
+      if (filter.name) {
+        query.andWhere('recipe.name LIKE :name', { name: `%${filter.name}%` });
       }
-      if (filter.tempo_preparo_minutos) {
-        where.tempo_preparo_minutos = filter.tempo_preparo_minutos;
+      if (filter.preparation_time_minutes) {
+        query.andWhere(
+          'recipe.preparation_time_minutes = :preparation_time_minutes',
+          { preparation_time_minutes: filter.preparation_time_minutes },
+        );
       }
     }
 
-    return await this.repository.find({
-      where,
-      relations: ['id_categorias'],
-    });
+    return await query
+      .leftJoinAndSelect('recipe.category', 'category')
+      .getMany();
   }
 
   async findOneById(id: number): Promise<Recipe | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: ['id_usuarios', 'id_categorias'],
+      relations: ['user', 'category'],
       select: {
         id: true,
-        nome: true,
-        tempo_preparo_minutos: true,
-        porcoes: true,
-        modo_preparo: true,
-        ingredientes: true,
-        criado_em: true,
-        alterado_em: true,
-        id_usuarios: {
+        name: true,
+        preparation_time_minutes: true,
+        servings: true,
+        preparation_method: true,
+        ingredients: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
           id: true,
-          nome: true,
+          name: true,
           login: true,
         },
-        id_categorias: {
+        category: {
           id: true,
-          nome: true,
+          name: true,
         },
       },
     });
