@@ -1,16 +1,15 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
     container_name: mysql_db
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: a4pm
-      MYSQL_DATABASE: a4pm
-      MYSQL_USER: a4pm
-      MYSQL_PASSWORD: a4pm
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_INITDB_SKIP_TZINFO: '1'
-    command: --default-authentication-plugin=mysql_native_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST}
+      MYSQL_INITDB_SKIP_TZINFO: ${MYSQL_INITDB_SKIP_TZINFO}
     ports:
       - "3308:3306"
