@@ -17,7 +17,7 @@ export const db = new DataSource({
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  synchronize: false,
+  synchronize: true,
   logging: false,
   entities: [User, Category, Recipe],
   migrations: [SeedCategories1733665696749],

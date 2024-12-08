@@ -35,7 +35,6 @@
           required
         ></textarea>
       </div>
-      {{ categories }}
       <div class="form-group">
         <label for="category_id">Category</label>
         <select id="category_id" v-model="recipe.category" required>
