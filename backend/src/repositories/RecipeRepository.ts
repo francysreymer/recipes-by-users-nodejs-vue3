@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 
 import RecipeFilter from '@/common/RecipeFilter';
 import TYPES from '@/config/types';
@@ -10,8 +10,8 @@ import { Recipe } from '@/entities/Recipe';
 export class RecipeRepository implements IRecipeRepository {
   private repository: Repository<Recipe>;
 
-  constructor(@inject(TYPES.DB) repository: Repository<Recipe>) {
-    this.repository = repository;
+  constructor(@inject(TYPES.DB) dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Recipe);
   }
 
   async findRecipesByUser(

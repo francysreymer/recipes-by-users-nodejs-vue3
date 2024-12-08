@@ -1,5 +1,5 @@
-const backendUrl = process.env.VUE_APP_BACKEND_URL || "http://localhost"; // Default to localhost if not defined
-const backendPort = process.env.VUE_APP_APP_PORT || "3003"; // Default to 3003 if not defined
+const backendUrl = process.env.VUE_APP_BACKEND_URL || "http://localhost";
+const backendPort = process.env.VUE_APP_APP_PORT || "3000";
 
 if (!process.env.VUE_APP_BACKEND_URL || !process.env.VUE_APP_APP_PORT) {
   console.warn(

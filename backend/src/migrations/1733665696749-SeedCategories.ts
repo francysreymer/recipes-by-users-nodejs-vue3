@@ -3,7 +3,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 export class SeedCategories1733665696749 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-          INSERT INTO Category (nome) VALUES
+          INSERT INTO categories (name) VALUES
           ('Cakes and sweet pies'),
           ('Meats'),
           ('Poultry'),
@@ -22,7 +22,7 @@ export class SeedCategories1733665696749 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-          DELETE FROM Category WHERE nome IN (
+          DELETE FROM categories WHERE name IN (
             'Cakes and sweet pies',
             'Meats',
             'Poultry',

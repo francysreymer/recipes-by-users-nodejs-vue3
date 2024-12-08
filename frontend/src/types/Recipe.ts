@@ -2,12 +2,12 @@ import { Category } from "@/types/Category";
 
 export type Recipe = {
   id: number;
-  nome: string;
-  tempo_preparo_minutos: number;
-  porcoes: number;
-  modo_preparo: string;
-  ingredientes: string;
-  criado_em: Date;
-  alterado_em: Date;
-  id_categorias: Category;
+  name: string;
+  preparation_time_minutes: number;
+  servings: number;
+  preparation_method: string;
+  ingredients: string;
+  created_at: Date;
+  updated_at: Date;
+  category: Category;
 };

@@ -48,7 +48,7 @@ export default defineComponent({
       try {
         const response = await axios.post(apis.login, {
           login: login.value,
-          senha: password.value,
+          password: password.value,
         });
 
         const token = response.data.token;

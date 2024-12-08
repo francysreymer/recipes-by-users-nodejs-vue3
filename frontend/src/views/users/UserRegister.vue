@@ -49,7 +49,7 @@ export default defineComponent({
         const response = await axios.post(apis.register, {
           nome: name.value,
           login: login.value,
-          senha: password.value,
+          password: password.value,
         });
 
         if (response.status === StatusCodes.CREATED) {

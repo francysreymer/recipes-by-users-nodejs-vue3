@@ -3,48 +3,49 @@
     <h1>{{ isEditMode ? "Edit Recipe" : "Add New Recipe" }}</h1>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
-        <label for="nome">Name</label>
-        <input type="text" id="nome" v-model="recipe.nome" required />
+        <label for="name">Name</label>
+        <input type="text" id="name" v-model="recipe.name" required />
       </div>
       <div class="form-group">
-        <label for="tempo_preparo_minutos">Preparation Time (minutes)</label>
+        <label for="preparation_time_minutes">Preparation Time (minutes)</label>
         <input
           type="number"
-          id="tempo_preparo_minutos"
-          v-model="recipe.tempo_preparo_minutos"
+          id="preparation_time_minutes"
+          v-model="recipe.preparation_time_minutes"
           required
         />
       </div>
       <div class="form-group">
-        <label for="porcoes">Portions</label>
-        <input type="number" id="porcoes" v-model="recipe.porcoes" required />
+        <label for="servings">Servings</label>
+        <input type="number" id="servings" v-model="recipe.servings" required />
       </div>
       <div class="form-group">
-        <label for="modo_preparo">Preparation Method</label>
+        <label for="preparation_method">Preparation Method</label>
         <textarea
-          id="modo_preparo"
-          v-model="recipe.modo_preparo"
+          id="preparation_method"
+          v-model="recipe.preparation_method"
           required
         ></textarea>
       </div>
       <div class="form-group">
-        <label for="ingredientes">Ingredients</label>
+        <label for="ingredients">Ingredients</label>
         <textarea
-          id="ingredientes"
-          v-model="recipe.ingredientes"
+          id="ingredients"
+          v-model="recipe.ingredients"
           required
         ></textarea>
       </div>
+      {{ categories }}
       <div class="form-group">
-        <label for="id_categorias">Category</label>
-        <select id="id_categorias" v-model="recipe.id_categorias" required>
+        <label for="category_id">Category</label>
+        <select id="category_id" v-model="recipe.category" required>
           <option value="" disabled>Select a category</option>
           <option
             v-for="category in categories"
             :key="category.id"
             :value="category.id"
           >
-            {{ category.nome }}
+            {{ category.name }}
           </option>
         </select>
       </div>
@@ -76,7 +77,9 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const isEditMode = ref(false);
-    const recipe = ref<Partial<Recipe>>({});
+    const recipe = ref<Partial<Recipe>>({
+      category: { id: 0, name: "" }, // Provide a default value for category
+    });
     const categories = ref<Category[]>([]);
     const message = ref<{ text: string; type: string } | null>(null);
 
@@ -88,12 +91,15 @@ export default defineComponent({
           const response = await axios.get(`${apis.recipe}/${id}`);
           const data = response.data;
           recipe.value = {
-            nome: data.nome,
-            tempo_preparo_minutos: data.tempo_preparo_minutos,
-            porcoes: data.porcoes,
-            modo_preparo: data.modo_preparo,
-            ingredientes: data.ingredientes,
-            id_categorias: data.id_categorias.id,
+            id: data.id,
+            name: data.name,
+            preparation_time_minutes: data.preparation_time_minutes,
+            servings: data.servings,
+            preparation_method: data.preparation_method,
+            ingredients: data.ingredients,
+            created_at: new Date(data.created_at),
+            updated_at: new Date(data.updated_at),
+            category: data.category,
           };
         } catch (error) {
           console.error("Error fetching recipe:", error);

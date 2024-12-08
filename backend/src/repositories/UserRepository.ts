@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 
 import TYPES from '@/config/types';
 import IUserRepository from '@/contracts/IUserRepository';
@@ -9,8 +9,8 @@ import { User } from '@/entities/User';
 export class UserRepository implements IUserRepository {
   private repository: Repository<User>;
 
-  constructor(@inject(TYPES.DB) repository: Repository<User>) {
-    this.repository = repository;
+  constructor(@inject(TYPES.DB) dataSource: DataSource) {
+    this.repository = dataSource.getRepository(User);
   }
 
   async findOneByLogin(login: string): Promise<User | null> {

@@ -1,13 +1,13 @@
 <template>
   <div class="filters">
     <input
-      v-model="nome"
+      v-model="name"
       type="text"
       placeholder="Filter by name"
       class="filter-input"
     />
     <input
-      v-model="tempoPreparoMinutos"
+      v-model="preparationTimeMinutes"
       type="number"
       placeholder="Filter by preparation time"
       class="filter-input"
@@ -22,19 +22,19 @@ import { defineComponent, ref } from "vue";
 export default defineComponent({
   name: "RecipeFilters",
   setup(_, { emit }) {
-    const nome = ref("");
-    const tempoPreparoMinutos = ref<number | null>(null);
+    const name = ref("");
+    const preparationTimeMinutes = ref<number | null>(null);
 
     const emitFilters = () => {
       emit("applyFilters", {
-        nome: nome.value,
-        tempo_preparo_minutos: tempoPreparoMinutos.value,
+        name: name.value,
+        preparationTimeMinutes: preparationTimeMinutes.value,
       });
     };
 
     return {
-      nome,
-      tempoPreparoMinutos,
+      name,
+      preparationTimeMinutes,
       emitFilters,
     };
   },

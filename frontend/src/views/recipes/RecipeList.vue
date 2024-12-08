@@ -17,7 +17,7 @@
           <th>ID</th>
           <th>Name</th>
           <th>Preparation Time (minutes)</th>
-          <th>Portions</th>
+          <th>Servings</th>
           <th>Preparation Method</th>
           <th>Ingredients</th>
           <th>Category</th>
@@ -29,14 +29,14 @@
       <tbody>
         <tr v-for="recipe in recipes" :key="recipe.id">
           <td>{{ recipe.id }}</td>
-          <td>{{ recipe.nome }}</td>
-          <td>{{ recipe.tempo_preparo_minutos }}</td>
-          <td>{{ recipe.porcoes }}</td>
-          <td>{{ recipe.modo_preparo }}</td>
-          <td>{{ recipe.ingredientes }}</td>
-          <td>{{ recipe.id_categorias.nome }}</td>
-          <td>{{ new Date(recipe.criado_em).toLocaleString() }}</td>
-          <td>{{ new Date(recipe.alterado_em).toLocaleString() }}</td>
+          <td>{{ recipe.name }}</td>
+          <td>{{ recipe.preparation_time_minutes }}</td>
+          <td>{{ recipe.servings }}</td>
+          <td>{{ recipe.preparation_method }}</td>
+          <td>{{ recipe.ingredients }}</td>
+          <td>{{ recipe.category?.name }}</td>
+          <td>{{ new Date(recipe.created_at).toLocaleString() }}</td>
+          <td>{{ new Date(recipe.updated_at).toLocaleString() }}</td>
           <td>
             <button @click="printRecipe(recipe)" class="action-button">
               Print
@@ -129,24 +129,24 @@ export default defineComponent({
       </head>
       <body>
         <div class="recipe-container">
-          <h1>${recipe.nome}</h1>
+          <h1>${recipe.name}</h1>
           <dl class="recipe-details">
             <dt>ID:</dt>
             <dd>${recipe.id}</dd>
             <dt>Preparation Time (minutes):</dt>
-            <dd>${recipe.tempo_preparo_minutos}</dd>
-            <dt>Portions:</dt>
-            <dd>${recipe.porcoes}</dd>
+            <dd>${recipe.preparation_time_minutes}</dd>
+            <dt>Servings:</dt>
+            <dd>${recipe.servings}</dd>
             <dt>Preparation Method:</dt>
-            <dd>${recipe.modo_preparo}</dd>
+            <dd>${recipe.preparation_method}</dd>
             <dt>Ingredients:</dt>
-            <dd>${recipe.ingredientes}</dd>
+            <dd>${recipe.ingredients}</dd>
             <dt>Category:</dt>
-            <dd>${recipe.id_categorias.nome}</dd>
+            <dd>${recipe.category.name}</dd>
             <dt>Created At:</dt>
-            <dd>${new Date(recipe.criado_em).toLocaleString()}</dd>
+            <dd>${new Date(recipe.created_at).toLocaleString()}</dd>
             <dt>Updated At:</dt>
-            <dd>${new Date(recipe.alterado_em).toLocaleString()}</dd>
+            <dd>${new Date(recipe.updated_at).toLocaleString()}</dd>
           </dl>
         </div>
       </body>
@@ -179,8 +179,8 @@ export default defineComponent({
     };
 
     const applyFilters = (filters: {
-      nome: string;
-      tempo_preparo_minutos: number | null;
+      name: string;
+      preparation_time_minutes: number | null;
     }) => {
       console.log("Applying filters:", filters);
       fetchRecipes(filters);

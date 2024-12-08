@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 
 import TYPES from '@/config/types';
 import ICategoryRepository from '@/contracts/ICategoryRepository';
@@ -9,8 +9,8 @@ import { Category } from '@/entities/Category';
 export class CategoryRepository implements ICategoryRepository {
   private repository: Repository<Category>;
 
-  constructor(@inject(TYPES.DB) repository: Repository<Category>) {
-    this.repository = repository;
+  constructor(@inject(TYPES.DB) dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Category);
   }
 
   async findAll(): Promise<Category[]> {
